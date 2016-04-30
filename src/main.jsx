@@ -31,7 +31,6 @@ var MainPage = React.createClass({
             printers: printerData,
             printer: defaultPrinter,
             isPrinting: false, 
-            pictures: pictureData,
             sizeOptions: _.pluck(_.find(printerData, function(data){return data.key === defaultPrinter}).queued, "size")
         };
     },
@@ -81,7 +80,7 @@ var MainPage = React.createClass({
         return (
             <div> 
                 <MenuBar      handlePrinterChange={this.handlePrinterChange} printer={this.state.printer} printers={this.state.printers}/>
-                <ProgressPane isPrinting={this.state.isPrinting} sizeOptions={this.state.sizeOptions} pictures={this.state.pictures} handlePrintChange={this.handlePrintChange}/>
+                <ProgressPane isPrinting={this.state.isPrinting} sizeOptions={this.state.sizeOptions} pictures={pictureData} handlePrintChange={this.handlePrintChange}/>
                 <QueuedPane   isPrinting={this.state.isPrinting} sizeOptions={this.state.sizeOptions} queued={queuedPictures.queued} handlePrintChange={this.handlePrintChange} handleQueuedButtonClick={this.handleQueuedButtonClick}/>
             </div>
         );
