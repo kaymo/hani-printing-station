@@ -1,0 +1,19 @@
+{
+  "main": "lib/main.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "webpack --progress",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "babel-core": "^5.8.23",
+    "babel-loader": "^5.3.2",
+    "webpack": "^1.12.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "express": "^4.13.3",
+    "classnames": "^2.2.3",
+    "underscore": "^1.8.3"
+  }
+}

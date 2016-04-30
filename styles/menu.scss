@@ -1,0 +1,32 @@
+@import './colours.scss';
+
+.menu {
+    width: 100%;
+    margin:0;
+    color: white;
+    background-color: $dark-grey;
+    height: 3.6rem;
+    z-index:2;
+    
+    .menu-title {
+        display: inline-block;
+        margin-left: 1rem;
+        float:left;
+    }
+    
+    .menu-printers {
+        display: inline-block;
+        float:right;
+        height: 100%;
+        
+        button {
+            margin-top: 0.4rem;
+            margin-right: 0.6rem;
+            border: $dark-grey 3px solid;
+        }
+        
+        .menu-selected-printer {
+            border-color: $darker-grey;
+        }
+    }
+}

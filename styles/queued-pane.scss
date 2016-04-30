@@ -1,0 +1,93 @@
+@import './colours.scss';
+
+.queued-pane {
+    width: 30%;
+    float: right;
+    display: inline-block;
+    overflow-y: scroll;
+    margin: 0;
+    padding: 0;
+	text-align: center;
+	background-color: $lighter-grey;
+	top: 3.6rem;
+	bottom: 0;
+	right:0;
+	position: absolute;
+	    
+	.queued-picture-size {
+        display: block;
+        margin: 1rem;
+        background-color: $light-grey;
+        
+        h3 {
+            line-height: 1.2rem;
+            color: $darkest-grey;
+        }
+    }
+	
+	.queued-picture {
+        margin-left:10%;
+        padding-right:10%;
+        text-align: left;
+        display: block;
+        clear: both;
+	    height: 6rem;
+        
+	    img {
+	        height: 5rem;
+	        float: left;
+	        padding: 0rem 1rem 1rem 0rem;
+	    }
+	    
+	    .queued-picture-title {
+	        font-weight: bold;
+	        display: block;
+	        margin-bottom: 1rem;
+	    }
+	    
+	    .queued-picture-change {
+	        display: inline-block;
+	        line-height: 0.1rem;
+	    }
+	    
+	    .queued-picture-number {
+	        display:inline;
+	        margin: 0.8rem;
+	    }
+	}
+	
+	button {
+	    clear: both;
+	    
+	    &.cancel-printing {
+	        background-color: $red;
+	       
+	        &:hover {
+	            background-color: $dark-red;
+	        }
+    
+            &:active {
+                background-color: $darker-red;
+            }
+    
+            &:disabled {
+                background-color: $red;
+            }
+	    }
+	    &.start-printing {
+	        background-color: $green;
+	       
+	        &:hover {
+	            background-color: $dark-green;
+	        }
+    
+            &:active {
+                background-color: $darker-green;
+            }
+    
+            &:disabled {
+                background-color: $green;
+            }
+	    }
+	}
+}

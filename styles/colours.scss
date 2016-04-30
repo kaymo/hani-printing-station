@@ -1,0 +1,17 @@
+$black: #000;
+$white: #fff;
+
+$med-grey: #888;
+$dark-grey: darken( $med-grey, 20% );
+$darker-grey: darken( $med-grey, 30% );
+$darkest-grey: darken( $med-grey, 40% );
+$light-grey: lighten( $med-grey, 20% );
+$lighter-grey: lighten( $med-grey, 30% );
+
+$red: #a01;
+$dark-red: darken( $red, 10% );
+$darker-red: darken( $red, 20% );
+
+$green: #0a1;
+$dark-green: darken( $green, 10% );
+$darker-green: darken( $green, 20% );
