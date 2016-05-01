@@ -5,13 +5,19 @@ var QueuedPicture = React.createClass({
         const pictureTitle = this.props.queuedPicture.title;
         const pictureSize  = this.props.printSize;
         const num = this.props.queuedPicture.number;
+        const buttonMinus = !this.props.isPrinting ? 
+                                    <button className="queued-picture-change" onClick={this.props.handlePrintChange.bind(null, pictureSize, pictureTitle, -1)}>-</button>
+                                    : null;
+        const buttonPlus  = !this.props.isPrinting ? 
+                                    <button className="queued-picture-change" onClick={this.props.handlePrintChange.bind(null, pictureSize, pictureTitle, 1)}>+</button>
+                                    : null;
         return (
             <div className="queued-picture">
                 <img src={this.props.queuedPicture.path}/>
                 <p className="queued-picture-title">{pictureTitle}</p>
-                <button className="queued-picture-change" onClick={this.props.handlePrintChange.bind(null, pictureSize, pictureTitle, -1)}>-</button>
+                {buttonMinus}
                 <p className="queued-picture-number">{num} print{num===1 ? " " : "s"}</p>
-                <button className="queued-picture-change" onClick={this.props.handlePrintChange.bind(null, pictureSize, pictureTitle,  1)}>+</button>
+                {buttonPlus}
             </div>
         );
     }

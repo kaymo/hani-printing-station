@@ -23,10 +23,18 @@
             margin-top: 0.4rem;
             margin-right: 0.6rem;
             border: $dark-grey 3px solid;
+            
+            p {
+                margin: 0;
+            }
         }
         
         .menu-selected-printer {
             border-color: $darker-grey;
+        }
+        
+        .menu-printing-printer p {
+            border-bottom: red 2px solid;
         }
     }
 }

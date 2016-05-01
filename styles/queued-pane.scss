@@ -48,11 +48,18 @@
 	    .queued-picture-change {
 	        display: inline-block;
 	        line-height: 0.1rem;
+	        
+	        &:first-of-type {
+	            margin-right: 0.8rem;
+	        }
+	        
+	        &:last-of-type {
+	            margin-left: 0.8rem;
+	        }
 	    }
 	    
 	    .queued-picture-number {
 	        display:inline;
-	        margin: 0.8rem;
 	    }
 	}
 	

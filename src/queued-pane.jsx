@@ -8,6 +8,7 @@ var QueuedPane = React.createClass({
   render: function() {
     const handler = this.props.handlePrintChange;
     const queuedProps = this.props.queued;
+    const isPrinting = this.props.isPrinting;
     
     let key = 0;
     let queuedPictures = [];
@@ -17,7 +18,7 @@ var QueuedPane = React.createClass({
             sizeQueue.prints.map(function(picture) {
                 if (picture.number > 0) {
                     return (
-                        <QueuedPicture key={key++} queuedPicture={picture} printSize={size} handlePrintChange={handler}/>
+                        <QueuedPicture key={key++} isPrinting={isPrinting} queuedPicture={picture} printSize={size} handlePrintChange={handler}/>
                     );
                 }
             })

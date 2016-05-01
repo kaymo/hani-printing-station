@@ -1,19 +1,23 @@
 var React = require('react');
 var _ = require('underscore');
+var cn = require('classnames');
 
 var MenuBar = React.createClass({
   render: function() {
-    var handler = this.props.handlePrinterChange;
-    var currentPrinter = this.props.printer;
-    var printers = this.props.printers;
-    var printerChoices = _.mapObject(printers, function(printer, printerKey) {
+    const handler = this.props.handlePrinterChange;
+    const currentPrinter = this.props.printer;
+    const printers = this.props.printers;
+    const printerChoices = _.mapObject(printers, function(printer, printerKey) {
+        const classes = cn({"menu-selected-printer": currentPrinter === printerKey},
+                           {"menu-unselected-printer": currentPrinter !== printerKey},
+                           {"menu-printing-printer": printer.isPrinting});
         return (
             <button 
                 key={printerKey}
                 onClick={handler.bind(null, printerKey)} 
-                className={currentPrinter === printerKey ? "menu-selected-printer" : "menu-unselected-printer"} 
+                className={classes} 
                 disabled={printer.disabled}>
-                {printer.name}
+                <p>{printer.name}</p>
             </button>
         );
     });
