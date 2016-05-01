@@ -16,7 +16,7 @@ var QueuedPicture = React.createClass({
                 <img src={this.props.queuedPicture.path}/>
                 <p className="queued-picture-title">{pictureTitle}</p>
                 {buttonMinus}
-                <p className="queued-picture-number">{num} print{num===1 ? " " : "s"}</p>
+                <p className="queued-picture-number">{num}</p>
                 {buttonPlus}
             </div>
         );

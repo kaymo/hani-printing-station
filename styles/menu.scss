@@ -6,7 +6,8 @@
     color: white;
     background-color: $dark-grey;
     height: 3.6rem;
-    z-index:2;
+    z-index: 2;
+    position: absolute;
     
     .menu-title {
         display: inline-block;

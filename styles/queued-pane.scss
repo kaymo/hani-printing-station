@@ -1,23 +1,33 @@
 @import './colours.scss';
 
 .queued-pane {
-    width: 30%;
+    width: 34%;
     float: right;
     display: inline-block;
-    overflow-y: scroll;
     margin: 0;
     padding: 0;
 	text-align: center;
+    overflow-y: scroll;
 	background-color: $lighter-grey;
 	top: 3.6rem;
 	bottom: 0;
 	right:0;
 	position: absolute;
+	
+	.queued-pane-queue {
+        width: 100%;
+        overflow-y: scroll;
+        bottom: 0;
+        right: 0;
+        top: 7rem;
+        position: absolute;
+	    background-color: $lightest-grey;
+	}
 	    
 	.queued-picture-size {
         display: block;
         margin: 1rem;
-        background-color: $light-grey;
+        background-color: $lighter-grey;
         
         h3 {
             line-height: 1.2rem;
@@ -26,17 +36,17 @@
     }
 	
 	.queued-picture {
-        margin-left:10%;
-        padding-right:10%;
+        margin-left:2rem;
+        padding-right:2rem;
         text-align: left;
         display: block;
         clear: both;
-	    height: 6rem;
+	    height: 5.5rem;
         
 	    img {
 	        height: 5rem;
 	        float: left;
-	        padding: 0rem 1rem 1rem 0rem;
+	        padding: 0rem 0.7rem 0.7rem 0rem;
 	    }
 	    
 	    .queued-picture-title {
@@ -48,6 +58,8 @@
 	    .queued-picture-change {
 	        display: inline-block;
 	        line-height: 0.1rem;
+	        font-size: 0.5rem;
+	        font-weight: bold;
 	        
 	        &:first-of-type {
 	            margin-right: 0.8rem;

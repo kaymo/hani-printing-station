@@ -42,8 +42,10 @@ var QueuedPane = React.createClass({
     return (
       <div className="queued-pane">
         <h2>Queued Prints</h2> 
-        {_.flatten(_.zip(queuedSizes, queued))}
         <QueuedButton isPrinting={this.props.isPrinting} handleQueuedButtonClick={this.props.handleQueuedButtonClick} isDisabled={isDisabled}/>
+        <div className="queued-pane-queue">
+            {_.flatten(_.zip(queuedSizes, queued))}
+        </div>
       </div>
     );
   }
