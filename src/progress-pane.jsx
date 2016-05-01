@@ -16,7 +16,7 @@ var ProgressPane = React.createClass({
     return (
       <div className="progress-pane">
         <h2>{paneHeader}</h2>
-        <div className="picture-choices">{pictureChoices}</div>
+        <div className="picture-choices">{!this.props.isPrinting ? pictureChoices : null}</div>
       </div>
     );
   }

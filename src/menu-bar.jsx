@@ -1,16 +1,19 @@
 var React = require('react');
+var _ = require('underscore');
 
 var MenuBar = React.createClass({
   render: function() {
     var handler = this.props.handlePrinterChange;
     var currentPrinter = this.props.printer;
-    var printerChoices = this.props.printers.map(function(printer) {
-        return <button key={printer.key}
-                       onClick={handler.bind(null, printer.key)} 
-                       className={currentPrinter === printer.key ? "menu-selected-printer" : "menu-unselected-printer"} 
-                       disabled={printer.disabled}>
-                       {printer.name}
-               </button>;
+    var printerChoices = _.mapObject(this.props.printers, function(printer, printerKey) {
+        return (
+            <button key={printerKey}
+                onClick={handler.bind(null, printerKey)} 
+                className={currentPrinter === printerKey ? "menu-selected-printer" : "menu-unselected-printer"} 
+                disabled={printer.disabled}>
+                {printer.name}
+            </button>
+        );
     });
     
     return (

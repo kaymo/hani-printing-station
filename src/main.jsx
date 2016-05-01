@@ -18,10 +18,10 @@ const pictureData = [
     {path: '../pictures/surfing_the_wind_ii_(2).jpg', title: 'Surfing the Wind II'},
 ];
 
-const printerData = [
-    {key:"A4", name: "A4 Printer", disabled: false, queued: [{size:14, prints:[]}, {size:19, prints:[]}]},
-    {key:"A3", name: "A3 Printer", disabled: false, queued: [{size:26, prints:[]}]},
-];
+const printerData = {
+    "A4": {name: "A4 Printer", disabled: false, isPrinting:false, queued: [{size:14, prints:[]}, {size:19, prints:[]}]},
+    "A3": {name: "A3 Printer", disabled: false, isPrinting:false, queued: [{size:26, prints:[]}]},
+};
 const defaultPrinter = "A4";
 
 var MainPage = React.createClass({
@@ -29,22 +29,24 @@ var MainPage = React.createClass({
     getInitialState: function() {
         return {
             printers: printerData,
-            printer: defaultPrinter,
-            isPrinting: false, 
-            sizeOptions: _.pluck(_.find(printerData, function(data){return data.key === defaultPrinter}).queued, "size")
+            printer: defaultPrinter, 
+            sizeOptions: _.pluck(printerData[defaultPrinter].queued, "size")
         };
     },
 
     handlePrinterChange: function(newPrinter) {
         this.setState({
             printer: newPrinter,
-            sizeOptions: _.pluck(_.find(printerData, function(data){return data.key === newPrinter}).queued, "size")
+            sizeOptions: _.pluck(printerData[newPrinter].queued, "size")
         });
     },
 
     handleQueuedButtonClick: function() {
+        var snapshot = this.state.printers;
+        var currentPrinter = this.state.printer;
+        snapshot[currentPrinter].isPrinting = !snapshot[currentPrinter].isPrinting;
         this.setState({
-            isPrinting: !this.state.isPrinting
+            printers: snapshot
         });
     },
 
@@ -52,21 +54,20 @@ var MainPage = React.createClass({
         var currentPrinter = this.state.printer;
         var queuedPictures = this.state.printers;
             
-        var printerIndex = _.findIndex(queuedPictures, function(printer){return printer.key === currentPrinter});
-        var sizeIndex = _.findIndex(queuedPictures[printerIndex].queued, function(queue){return queue.size === printSize});
-        var queuedPicture = _.findWhere(queuedPictures[printerIndex].queued[sizeIndex].prints, {title: printTitle});
+        var sizeIndex = _.findIndex(queuedPictures[currentPrinter].queued, function(queue){return queue.size === printSize});
+        var queuedPicture = _.findWhere(queuedPictures[currentPrinter].queued[sizeIndex].prints, {title: printTitle});
         
         if (queuedPicture === undefined) {
             var data = _.findWhere(pictureData, {title: printTitle});
-            queuedPictures[printerIndex].queued[sizeIndex].prints.push({title: printTitle, path: data.path, number: 1});
+            queuedPictures[currentPrinter].queued[sizeIndex].prints.push({title: printTitle, path: data.path, number: 1});
 
             this.setState({
                 printers: queuedPictures
             });
         } else {
-            var indexToUpdate = _.indexOf(this.state.printers[printerIndex].queued[sizeIndex].prints, queuedPicture);
-            var updatedQuantity = queuedPictures[printerIndex].queued[sizeIndex].prints[indexToUpdate].number + change;
-            queuedPictures[printerIndex].queued[sizeIndex].prints[indexToUpdate].number = Math.max(0, updatedQuantity);
+            var indexToUpdate = _.indexOf(this.state.printers[currentPrinter].queued[sizeIndex].prints, queuedPicture);
+            var updatedQuantity = queuedPictures[currentPrinter].queued[sizeIndex].prints[indexToUpdate].number + change;
+            queuedPictures[currentPrinter].queued[sizeIndex].prints[indexToUpdate].number = Math.max(0, updatedQuantity);
 
             this.setState({
                 printers: queuedPictures
@@ -76,12 +77,12 @@ var MainPage = React.createClass({
 
     render: function() {
         var currentPrinter = this.state.printer;
-        var queuedPictures = _.find(this.state.printers, function(printer){return printer.key === currentPrinter});
+        var queuedPictures = this.state.printers[currentPrinter];
         return (
             <div> 
                 <MenuBar      handlePrinterChange={this.handlePrinterChange} printer={this.state.printer} printers={this.state.printers}/>
-                <ProgressPane isPrinting={this.state.isPrinting} sizeOptions={this.state.sizeOptions} pictures={pictureData} handlePrintChange={this.handlePrintChange}/>
-                <QueuedPane   isPrinting={this.state.isPrinting} sizeOptions={this.state.sizeOptions} queued={queuedPictures.queued} handlePrintChange={this.handlePrintChange} handleQueuedButtonClick={this.handleQueuedButtonClick}/>
+                <ProgressPane isPrinting={queuedPictures.isPrinting} sizeOptions={this.state.sizeOptions} pictures={pictureData} handlePrintChange={this.handlePrintChange}/>
+                <QueuedPane   isPrinting={queuedPictures.isPrinting} sizeOptions={this.state.sizeOptions} queued={queuedPictures.queued} handlePrintChange={this.handlePrintChange} handleQueuedButtonClick={this.handleQueuedButtonClick}/>
             </div>
         );
     }
