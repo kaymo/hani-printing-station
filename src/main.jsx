@@ -64,7 +64,7 @@ var MainPage = React.createClass({
         this.setState({
             printers: snapshot,
             isPrintingComplete: false,
-            intervalProcess: 0;
+            intervalProcess: 0,
         });
     },
     
@@ -134,9 +134,9 @@ var MainPage = React.createClass({
                     printers: snapshot,
                 });
             
-                sendPrintRequest(this.state.printer);
+                this.sendPrintRequest(this.state.printer);
             }
-        }
+        });
     },
     
     startPrinting: function() {
