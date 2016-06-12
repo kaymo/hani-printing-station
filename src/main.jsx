@@ -17,7 +17,8 @@ var MainPage = React.createClass({
             isPrintingComplete: false,
             printers: null,
             printer: null, 
-            sizeOptions: null
+            sizeOptions: null,
+            intervalProcess: 0,
         };
     },
 
@@ -55,11 +56,15 @@ var MainPage = React.createClass({
     },
     
     updatePrintingStatus: function() {
+        if (intervalProcess !== 0) {
+            clearInterval(this.state.intervalProcess);
+        }
         var snapshot = this.state.printers;
         snapshot[this.state.printer].isPrinting = !snapshot[this.state.printer].isPrinting;
         this.setState({
             printers: snapshot,
             isPrintingComplete: false,
+            intervalProcess: 0;
         });
     },
     
@@ -74,19 +79,22 @@ var MainPage = React.createClass({
         });
     },
     
-    sendPrintRequest: function(currentPrinter) {
-        if (this.state.printer !== currentPrinter || !this.state.printers[this.state.printer].isPrinting) return;
+    sendPrintRequest: function() {
+        if (!this.state.printers[this.state.printer].isPrinting) return;
         
-        var sizeIndex = _.findIndex(this.state.printers[currentPrinter].queued, queue => queue.prints.length > 0);
+        var sizeIndex = _.findIndex(this.state.printers[this.state.printer].queued, queue => queue.prints.length > 0);
         if (sizeIndex < 0) {
+            if (this.state.intervalProcess !== 0) {
+                clearInterval(this.state.intervalProcess);
+            }
             this.setState({
+                intervalProcess: 0,
                 isPrintingComplete: true,
             });
             return;
         }
         
-        var sizeQueue = this.state.printers[currentPrinter].queued[sizeIndex];
-    
+        var sizeQueue = this.state.printers[this.state.printer].queued[sizeIndex];
         var toPrint = sizeQueue.prints[0];
         var data = {
             title: toPrint.title,  
@@ -98,7 +106,7 @@ var MainPage = React.createClass({
         $.post('http://localhost:3000/print', data).done(function(message) {
             if (message !== "") {
                 var snapshot = self.state.printers;
-                snapshot[currentPrinter].queued[sizeIndex].prints[0].state = "in progress";
+                snapshot[self.state.printer].queued[sizeIndex].prints[0].state = "in progress";
             
                 self.setState({
                     printers: snapshot,
@@ -109,9 +117,34 @@ var MainPage = React.createClass({
         });
     },
     
+    printQueue: function() {
+        $.post('http://localhost:3000/current-job').done(function(jobId) {
+            if (jobId === 0) {
+            
+                // Set all 'in progress' to 'completed'
+                var snapshot = self.state.printers;
+                _.each(snapshot[currentPrinter].queued, function(sizeQueue) {
+                    _.each(sizeQueue.prints, function(print) {
+                        if (print.state === "in progress") {
+                            print.state = "complete";
+                        }
+                    });
+                });
+                self.setState({
+                    printers: snapshot,
+                });
+            
+                sendPrintRequest(this.state.printer);
+            }
+        }
+    },
+    
     startPrinting: function() {
         this.updatePrintingStatus();
-        this.sendPrintRequest(this.state.printer);
+        this.sendPrintRequest();
+        this.setState({
+            intervalProcess: setInterval(this.printQueue(), 10000),
+        });
     },
 
     handleQueuedButtonClick: function() {
