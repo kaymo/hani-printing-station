@@ -5,8 +5,8 @@ var util = require('util');
 
 module.exports = function Printing () {
 
-    this.printer = 'default';
-    this.jobId = 0;
+    this.printer = null;
+    this.jobId = null;
     
     this.printers = {};
     this.pictures = {};
@@ -77,8 +77,12 @@ module.exports = function Printing () {
         return error;
     }
     
-    this.cancelPrint = function (req) {
-        isCanceled = printer.setJob(this.printer, this.jobId, 'CANCEL');
+    this.cancelJob = function () {
+        isCanceled = false;
+        
+        if (this.printer !== null & this.jobId !== null)
+            isCanceled = printer.setJob(this.printer, this.jobId, 'CANCEL');
+            
 		return isCanceled;
 	}
 };

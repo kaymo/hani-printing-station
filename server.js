@@ -46,8 +46,8 @@ app.get('/job', function(req, res){
 app.get('/current-job', function(req, res){
    res.send(printing.getCurrentJob());
 });
-app.get('/prints', function(req, res){
-   res.send(printing.cancelPrint(req));
+app.post('/job', function(req, res){
+   res.send(printing.cancelJob());
 });
 
 

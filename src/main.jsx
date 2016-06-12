@@ -13,6 +13,7 @@ var MainPage = React.createClass({
     getInitialState: function() {
         return {
             isLoaded: false,
+            isPrintingStatusRequested: false,
             printers: null,
             printer: null, 
             sizeOptions: null
@@ -51,14 +52,48 @@ var MainPage = React.createClass({
             }
         });
     },
-
-    handleQueuedButtonClick: function() {
+    
+    updatePrintingStatus: function() {
         var snapshot = this.state.printers;
         snapshot[this.state.printer].isPrinting = !snapshot[this.state.printer].isPrinting;
         this.setState({
             printers: snapshot
         });
+    },
+    
+    cancelCurrentJob: function() {
+        var self = this;
+        $.post('http://localhost:3000/job').done(function(isCanceled) {
+            if (isCanceled) {
+                self.updatePrintingStatus();
+            } else {
+                console.log("Couldn't cancel current printing job.");
+            }
+        });
+    },
+    
+    startPrinting: function() {
+        this.updatePrintingStatus();
+    },
+
+    handleQueuedButtonClick: function() {
+        if (!this.state.isPrintingStatusRequested) {
+            // Lock further requests
+            this.setState({
+                isPrintingStatusRequested: true,
+            });
         
+            if (!this.state.printers[this.state.printer].isPrinting === false) {
+                this.cancelCurrentJob();
+            } else {
+                this.startPrinting();
+            }
+            
+            // Unlock further requests
+            this.setState({
+                isPrintingStatusRequested: false,
+            });
+        }  
     },
 
     handlePrintChange: function(printSize, printTitle, change) {
