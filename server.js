@@ -16,12 +16,45 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 
-app.set('port', (process.env.PORT || 3000));
-
 app.use('/', express.static(path.join(__dirname, '.')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+
+/* 
+ * Handling AJAX calls 
+ */
+ 
+var Printing = require('./server-side/printing');
+var printing = new Printing();
+
+app.get('/printers', function(req, res){
+   res.send(printing.getPrinters());
+});
+app.get('/printer', function(req, res){
+   res.send(printing.getPrinter());
+});
+app.post('/printer', function(req, res){
+   res.send(printing.setPrinter(req));
+});
+app.get('/pictures', function(req, res){
+   res.send(printing.getPictures());
+});
+app.get('/job', function(req, res){
+   res.send(printing.setJob(req));
+});
+app.get('/current-job', function(req, res){
+   res.send(printing.getCurrentJob());
+});
+app.get('/prints', function(req, res){
+   res.send(printing.cancelPrint(req));
+});
+
+
+/* 
+ * Start the app on 3000 
+ */
+app.set('port', (process.env.PORT || 3000));
 app.listen(app.get('port'), function() {
-  console.log('Server started: http://localhost:' + app.get('port') + '/');
+    console.log('Server started: http://localhost:' + app.get('port') + '/');
 });

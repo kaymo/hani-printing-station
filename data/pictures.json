@@ -1,0 +1,14 @@
+{
+    "pictures": [
+        {"path": "../pictures/from_lambeth_walk_websize.jpg", "title": "From Lambeth Walk"},
+        {"path": "../pictures/bird_on_a_wire_websize.jpg", "title": "Bird on a Wire"},
+        {"path": "../pictures/Botallack_III_5x5in_300dpi.jpg", "title": "Botallack III"},
+        {"path": "../pictures/fox_gloves_and_sea_glimpses_websize.jpg", "title": "Fox Gloves & Sea Glimpses"},
+        {"path": "../pictures/homeward_bound.jpg", "title": "Homeward Bound"},
+        {"path": "../pictures/kynance,_a_glittering_sea.jpg", "title": "Kynance, a Glittering Sea"},
+        {"path": "../pictures/porthminster_point_2.jpg", "title": "Porthminster Point"},
+        {"path": "../pictures/porthminster_to_st_ives-2.jpg", "title": "Porthminster to St Ives"},
+        {"path": "../pictures/stardust-2.jpg", "title": "Stardust"},
+        {"path": "../pictures/surfing_the_wind_ii_(2).jpg", "title": "Surfing the Wind II"} 
+    ]
+}

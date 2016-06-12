@@ -1,43 +1,52 @@
 var React = require('react');
 var _ = require('underscore');
+var $ = require('jquery');
 
 var MenuBar = require('./menu-bar');
 var ProgressPane = require('./progress-pane');
 var QueuedPane = require('./queued-pane');
 
-const pictureData = [
-    {path: '../pictures/from_lambeth_walk_websize.jpg', title: 'From Lambeth Walk'},
-    {path: '../pictures/bird_on_a_wire_websize.jpg', title: 'Bird on a Wire'},
-    {path: '../pictures/Botallack_III_5x5in_300dpi.jpg', title: 'Botallack III'},
-    {path: '../pictures/fox_gloves_and_sea_glimpses_websize.jpg', title: 'Fox Gloves & Sea Glimpses'},
-    {path: '../pictures/homeward_bound.jpg', title: 'Homeward Bound'},
-    {path: '../pictures/kynance,_a_glittering_sea.jpg', title: 'Kynance, a Glittering Sea'},
-    {path: '../pictures/porthminster_point_2.jpg', title: 'Porthminster Point'},
-    {path: '../pictures/porthminster_to_st_ives-2.jpg', title: 'Porthminster to St Ives'},
-    {path: '../pictures/stardust-2.jpg', title: 'Stardust'},
-    {path: '../pictures/surfing_the_wind_ii_(2).jpg', title: 'Surfing the Wind II'},
-];
-
-const printerData = {
-    "A4": {name: "A4 Printer", disabled: false, isPrinting:false, queued: [{size:14, prints:[]}, {size:19, prints:[]}]},
-    "A3": {name: "A3 Printer", disabled: false, isPrinting:false, queued: [{size:26, prints:[]}]},
-};
-const defaultPrinter = "A4";
+var pictureData = null;
 
 var MainPage = React.createClass({
 
     getInitialState: function() {
         return {
-            printers: printerData,
-            printer: defaultPrinter, 
-            sizeOptions: _.pluck(printerData[defaultPrinter].queued, "size")
+            printers: null,
+            printer: null, 
+            sizeOptions: null
         };
     },
 
+    componentDidMount: function() {
+        var self = this;
+        
+        $.get('http://localhost:3000/printers').done(function(loadedPrinters) {
+            $.get('http://localhost:3000/printer').done(function(loadedDefault) {
+                $.get('http://localhost:3000/pictures').done(function(pictures) {
+                    pictureData = pictures.pictures;
+                    
+                    self.setState({
+                        printers: loadedPrinters,
+                        printer: loadedDefault,
+                        sizeOptions: _.pluck(loadedPrinters[loadedDefault].queued, "size")
+                    });
+                });
+            });
+        });
+    },
+
     handlePrinterChange: function(newPrinter) {
-        this.setState({
-            printer: newPrinter,
-            sizeOptions: _.pluck(printerData[newPrinter].queued, "size")
+        var self = this;
+        $.post('http://localhost:3000/printer', {printer: newPrinter}).done(function(currentPrinter) {
+            if (currentPrinter !== newPrinter) {
+                self.setState({
+                    printer: newPrinter,
+                    sizeOptions: _.pluck(self.state.printers[newPrinter].queued, "size")
+                });
+            } else {
+                console.log("Couldn't change printer from " + currentPrinter + " to " + newPrinter);
+            }
         });
     },
 
@@ -59,7 +68,7 @@ var MainPage = React.createClass({
         
         if (queuedPicture === undefined) {
             var data = _.findWhere(pictureData, {title: printTitle});
-            queuedPictures[currentPrinter].queued[sizeIndex].prints.push({title: printTitle, path: data.path, number: 1});
+            queuedPictures[currentPrinter].queued[sizeIndex].prints.push({title: printTitle, path: data.path, number: 1, state: "not started"});
 
             this.setState({
                 printers: queuedPictures
@@ -76,15 +85,19 @@ var MainPage = React.createClass({
     },
 
     render: function() {
-        var currentPrinter = this.state.printer;
-        var queuedPictures = this.state.printers[currentPrinter];
-        return (
-            <div> 
-                <MenuBar      handlePrinterChange={this.handlePrinterChange} printer={this.state.printer} printers={this.state.printers}/>
-                <ProgressPane isPrinting={queuedPictures.isPrinting} sizeOptions={this.state.sizeOptions} pictures={pictureData} handlePrintChange={this.handlePrintChange}/>
-                <QueuedPane   isPrinting={queuedPictures.isPrinting} sizeOptions={this.state.sizeOptions} queued={queuedPictures.queued} handlePrintChange={this.handlePrintChange} handleQueuedButtonClick={this.handleQueuedButtonClick}/>
-            </div>
-        );
+        if ((this.state.printers !== null) && (this.state.printer !== null) && (pictureData !== null)) {
+            var currentPrinter = this.state.printer;
+            var queuedPictures = this.state.printers[currentPrinter];
+            return (
+                <div> 
+                    <MenuBar      handlePrinterChange={this.handlePrinterChange} printer={this.state.printer} printers={this.state.printers}/>
+                    <ProgressPane isPrinting={queuedPictures.isPrinting} sizeOptions={this.state.sizeOptions} queued={queuedPictures.queued} pictures={pictureData} handlePrintChange={this.handlePrintChange}/>
+                    <QueuedPane   isPrinting={queuedPictures.isPrinting} sizeOptions={this.state.sizeOptions} queued={queuedPictures.queued} handlePrintChange={this.handlePrintChange} handleQueuedButtonClick={this.handleQueuedButtonClick}/>
+                </div>
+            );
+        } else {
+            return null;
+        }
     }
 });
 

@@ -28,5 +28,8 @@ module.exports = {
     // Include '.js', '.jsx' to resolve files by these implicit extensions
     // (e.g. require('underscore')).
     extensions: ['', '.js', '.jsx']
+  },
+  node: {
+    child_process: 'empty'
   }
 };

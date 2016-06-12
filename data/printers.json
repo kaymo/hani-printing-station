@@ -1,0 +1,29 @@
+{
+    "A4": {
+        "name": "A4 Printer", 
+        "disabled": false, 
+        "isPrinting": false, 
+        "queued": [
+            {
+                "size": 14, 
+                "prints": []
+            }, 
+            {
+                "size": 19, 
+                "prints": []
+            }
+        ]
+    },
+    
+    "A3": {
+        "name": "A3 Printer", 
+        "disabled": false, 
+        "isPrinting": false, 
+        "queued": [
+            {
+                "size": 26, 
+                "prints": []
+            }
+        ]
+    }
+}
