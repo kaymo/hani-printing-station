@@ -44,9 +44,7 @@ module.exports = function Printing () {
     }
     
     this.getCurrentJob = function () {
-        var currentPrinter = 'Printer: ' + this.printer;
-        var currentJob = 'Job: ' + this.jobId;
-        return currentPrinter + "<br/>" + currentJob;
+        return this.jobId;
     }
     
     this.getPrinter = function () {

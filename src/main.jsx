@@ -12,6 +12,7 @@ var MainPage = React.createClass({
 
     getInitialState: function() {
         return {
+            isLoaded: false,
             printers: null,
             printer: null, 
             sizeOptions: null
@@ -27,6 +28,7 @@ var MainPage = React.createClass({
                     pictureData = pictures.pictures;
                     
                     self.setState({
+                        isLoaded: true,
                         printers: loadedPrinters,
                         printer: loadedDefault,
                         sizeOptions: _.pluck(loadedPrinters[loadedDefault].queued, "size")
@@ -52,11 +54,11 @@ var MainPage = React.createClass({
 
     handleQueuedButtonClick: function() {
         var snapshot = this.state.printers;
-        var currentPrinter = this.state.printer;
-        snapshot[currentPrinter].isPrinting = !snapshot[currentPrinter].isPrinting;
+        snapshot[this.state.printer].isPrinting = !snapshot[this.state.printer].isPrinting;
         this.setState({
             printers: snapshot
         });
+        
     },
 
     handlePrintChange: function(printSize, printTitle, change) {
@@ -85,7 +87,7 @@ var MainPage = React.createClass({
     },
 
     render: function() {
-        if ((this.state.printers !== null) && (this.state.printer !== null) && (pictureData !== null)) {
+        if (this.state.isLoaded) {
             var currentPrinter = this.state.printer;
             var queuedPictures = this.state.printers[currentPrinter];
             return (
