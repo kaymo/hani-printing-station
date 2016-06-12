@@ -40,14 +40,14 @@ app.post('/printer', function(req, res){
 app.get('/pictures', function(req, res){
    res.send(printing.getPictures());
 });
-app.get('/job', function(req, res){
-   res.send(printing.setJob(req));
-});
 app.get('/current-job', function(req, res){
    res.send(printing.getCurrentJob());
 });
 app.post('/job', function(req, res){
    res.send(printing.cancelJob());
+});
+app.post('/print', function(req, res){
+   res.send(printing.printFile(req));
 });
 
 

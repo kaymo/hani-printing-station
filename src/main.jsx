@@ -14,6 +14,7 @@ var MainPage = React.createClass({
         return {
             isLoaded: false,
             isPrintingStatusRequested: false,
+            isPrintingComplete: false,
             printers: null,
             printer: null, 
             sizeOptions: null
@@ -57,11 +58,12 @@ var MainPage = React.createClass({
         var snapshot = this.state.printers;
         snapshot[this.state.printer].isPrinting = !snapshot[this.state.printer].isPrinting;
         this.setState({
-            printers: snapshot
+            printers: snapshot,
+            isPrintingComplete: false,
         });
     },
     
-    cancelCurrentJob: function() {
+    cancelPrinting: function() {
         var self = this;
         $.post('http://localhost:3000/job').done(function(isCanceled) {
             if (isCanceled) {
@@ -72,8 +74,44 @@ var MainPage = React.createClass({
         });
     },
     
+    sendPrintRequest: function(currentPrinter) {
+        if (this.state.printer !== currentPrinter || !this.state.printers[this.state.printer].isPrinting) return;
+        
+        var sizeIndex = _.findIndex(this.state.printers[currentPrinter].queued, queue => queue.prints.length > 0);
+        if (sizeIndex < 0) {
+            this.setState({
+                isPrintingComplete: true,
+            });
+            return;
+        }
+        
+        var sizeQueue = this.state.printers[currentPrinter].queued[sizeIndex];
+    
+        var toPrint = sizeQueue.prints[0];
+        var data = {
+            title: toPrint.title,  
+            number: toPrint.number,
+            size: sizeQueue.size
+        };
+        
+        var self = this;
+        $.post('http://localhost:3000/print', data).done(function(message) {
+            if (message !== "") {
+                var snapshot = self.state.printers;
+                snapshot[currentPrinter].queued[sizeIndex].prints[0].state = "in progress";
+            
+                self.setState({
+                    printers: snapshot,
+                });
+            } else {
+                alert(message);
+            }
+        });
+    },
+    
     startPrinting: function() {
         this.updatePrintingStatus();
+        this.sendPrintRequest(this.state.printer);
     },
 
     handleQueuedButtonClick: function() {
@@ -84,7 +122,7 @@ var MainPage = React.createClass({
             });
         
             if (!this.state.printers[this.state.printer].isPrinting === false) {
-                this.cancelCurrentJob();
+                this.cancelPrinting();
             } else {
                 this.startPrinting();
             }

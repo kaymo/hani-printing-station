@@ -57,22 +57,35 @@ module.exports = function Printing () {
     }
     
     this.printFile = function (req) {
-        var fileName = req.query.filename;
-        
-        var error = 0;
-        printer.printDirect({
-            data: fileName,
-            printer: this.printer, 
+        var error = "";
+        if (this.jobId !== 0) {
+            error = "Already printing."
+        } else {
+            var number = req.query.number; // not yet using
+            var size = req.query.size; // not yet using
+            var title = req.query.title;
+            
+            var fileName = _.findWhere(this.pictures, {title: title})
+            if (fileName === undefined) {
+                error = "File requested for printing not found.";
+            } else {
+                return error;
+                printer.printDirect({
+                    data: fileName,
+                    printer: this.printer,
+                    docname: title,
     
-            success: function (job) {
-                this.jobId = job;
-            },
-            error: function (err) {
-                this.jobId = 0;
-                error = err;
-                console.log(error);
+                    success: function (job) {
+                        this.jobId = job;
+                    },
+                    error: function (err) {
+                        this.jobId = 0;
+                        error = err;
+                        console.log(error);
+                    }
+                });
             }
-        });
+        }
         
         return error;
     }
