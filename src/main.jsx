@@ -56,7 +56,7 @@ var MainPage = React.createClass({
     },
     
     updatePrintingStatus: function() {
-        if (intervalProcess !== 0) {
+        if (this.state.intervalProcess !== 0) {
             clearInterval(this.state.intervalProcess);
         }
         var snapshot = this.state.printers;
@@ -118,7 +118,7 @@ var MainPage = React.createClass({
     },
     
     printQueue: function() {
-        $.post('http://localhost:3000/current-job').done(function(jobId) {
+        $.get('http://localhost:3000/current-job').done(function(jobId) {
             if (jobId === 0) {
             
                 // Set all 'in progress' to 'completed'
