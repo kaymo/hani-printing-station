@@ -9,6 +9,7 @@ var QueuedPane = React.createClass({
     const handler = this.props.handlePrintChange;
     const queuedProps = this.props.queued;
     const isPrinting = this.props.isPrinting;
+    const isPrintingComplete = this.props.isPrintingComplete;
     
     let key = 0;
     let queuedPictures = [];
@@ -32,6 +33,10 @@ var QueuedPane = React.createClass({
     
     });
     
+    if (isPrintingComplete) {
+        isDisabled = false;
+    }
+    
     var queuedSizes = this.props.sizeOptions.map(function(size) {
         return (
             <div key={key++} className="queued-picture-size"><h3>{size}cm</h3></div>
@@ -46,7 +51,7 @@ var QueuedPane = React.createClass({
     return (
       <div className="queued-pane">
         <h2>Queued Prints</h2> 
-        <QueuedButton isPrinting={this.props.isPrinting} handleQueuedButtonClick={this.props.handleQueuedButtonClick} isDisabled={isDisabled}/>
+        <QueuedButton isPrinting={isPrinting} isPrintingComplete={isPrintingComplete} handleQueuedButtonClick={this.props.handleQueuedButtonClick} isDisabled={isDisabled}/>
         <div className="queued-pane-queue">
             {_.flatten(_.zip(queuedSizes, queued))}
         </div>
