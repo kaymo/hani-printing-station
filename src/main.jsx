@@ -158,6 +158,16 @@ var MainPage = React.createClass({
     },
 
     handleQueuedButtonClick: function() {
+        if (this.state.printers[this.state.printer].isPrinting && this.state.isPrintingComplete) {
+            var snapshot = this.state.printers;
+            snapshot[this.state.printer].isPrinting = false;
+            this.setState({
+                printers: snapshot,
+                isPrintingComplete: false,
+            });
+            return;
+        }
+        
         if (!this.state.isPrintingStatusRequested) {
             // Lock further requests
             this.setState({
