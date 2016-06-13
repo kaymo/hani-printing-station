@@ -12,21 +12,25 @@ var QueuedPane = React.createClass({
     
     let key = 0;
     let queuedPictures = [];
+    let isDisabled = true;
     _.each(this.props.sizeOptions, function(size) {
         var sizeQueue = _.find(queuedProps, function(queue){return queue.size === size});
         queuedPictures.push(
             sizeQueue.prints.map(function(picture) {
                 if (picture.number > 0) {
-                    return (
-                        <QueuedPicture key={key++} isPrinting={isPrinting} queuedPicture={picture} printSize={size} handlePrintChange={handler}/>
-                    );
+                    if (picture.state === "not started") {
+                        isDisabled = false;
+                        return (
+                            <QueuedPicture key={key++} isPrinting={isPrinting} queuedPicture={picture} printSize={size} handlePrintChange={handler}/>
+                        );
+                    } else if (picture.state === "in progress") {
+                        isDisabled = false;
+                    }
                 }
             })
         );
     
     });
-    
-    const isDisabled = key === 0;
     
     var queuedSizes = this.props.sizeOptions.map(function(size) {
         return (

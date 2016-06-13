@@ -82,8 +82,11 @@ var MainPage = React.createClass({
     sendPrintRequest: function() {
         if (!this.state.printers[this.state.printer].isPrinting) return;
         
-        var sizeIndex = _.findIndex(this.state.printers[this.state.printer].queued, queue => queue.prints.length > 0);
-        if (sizeIndex < 0) {
+        var sizeQueueIndex = _.findIndex(this.state.printers[this.state.printer].queued, queue => { 
+            return queue.prints.length > 0 && _.without(_.pluck(queue.prints, "number"), 0).length > 0;
+        });
+        
+        if (sizeQueueIndex < 0) {
             if (this.state.intervalProcess !== 0) {
                 clearInterval(this.state.intervalProcess);
             }
@@ -94,8 +97,10 @@ var MainPage = React.createClass({
             return;
         }
         
-        var sizeQueue = this.state.printers[this.state.printer].queued[sizeIndex];
-        var toPrint = sizeQueue.prints[0];
+        var sizeQueue = this.state.printers[this.state.printer].queued[sizeQueueIndex];
+        var toPrintIndex = _.findIndex(sizeQueue.prints, print => print.number > 0);
+        var toPrint = sizeQueue.prints[toPrintIndex];
+        
         var data = {
             title: toPrint.title,  
             number: toPrint.number,
@@ -106,7 +111,7 @@ var MainPage = React.createClass({
         $.post('http://localhost:3000/print', data).done(function(message) {
             if (message !== "") {
                 var snapshot = self.state.printers;
-                snapshot[self.state.printer].queued[sizeIndex].prints[0].state = "in progress";
+                snapshot[self.state.printer].queued[sizeQueueIndex].prints[toPrintIndex].state = "in progress";
             
                 self.setState({
                     printers: snapshot,

@@ -7,18 +7,19 @@
     padding: 0;
 	bottom: 0;
 	left:0;
-	text-align: center;
 	height:100vh;
     z-index:1;
     position: absolute;
     
     h2 {
         padding-top: 4rem;
+	    text-align: center;
     }
     
     .picture-choice {
         display: inline-block;
         padding-top: 1rem;
+	    text-align: center;
         
         img {
             width: 9rem;
@@ -45,5 +46,48 @@
                 }
             }
         }
+    }
+    
+    .progress-picture {
+        width: 100%;
+        clear: both;
+        display: inline-block;
+	    text-align: left;
+        padding-top: 1rem;
+        margin: 0 5rem;
+	    
+        img {
+            width: 9rem;
+            height: 9rem;
+            padding: 0 1rem 0 1rem;
+	        float: left;
+        }
+        
+        .progress-picture-title {
+	        font-weight: bold;
+	        display: block;
+	        line-height: 0;
+	    }
+	    
+	    .progress-picture-status {
+	        display: inline-block;
+            padding: 0.05rem 0.2rem 0.15rem 0.2rem;
+            border-radius: 2px;
+            
+            &.inprogress {
+                color: orange;
+                border: 1px orange solid;
+            }
+            
+            &.cancelled {
+                color: red;
+                border: 1px red solid;
+            }
+            
+            &.completed {
+                color: green;
+                border: 1px green solid;
+            }
+	    }
     }
 }
