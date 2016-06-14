@@ -82,7 +82,8 @@ var MainPage = React.createClass({
         if (!this.state.printers[this.state.printer].isPrinting) return;
         
         var sizeQueueIndex = _.findIndex(this.state.printers[this.state.printer].queued, queue => { 
-            return queue.prints.length > 0 && _.without(_.pluck(queue.prints, "number"), 0).length > 0 && _.contains(_.pluck(queue.prints, "state"), "not started");
+            return queue.prints.length > 0 && 
+                _.filter(queue.prints, print => {return print.number > 0 && print.state === "not started"}).length > 0;
         });
         
         if (sizeQueueIndex < 0) {
