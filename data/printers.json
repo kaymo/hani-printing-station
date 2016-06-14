@@ -3,6 +3,7 @@
         "name": "A4 Printer", 
         "disabled": false, 
         "isPrinting": false, 
+        "isPrintingComplete": false, 
         "queued": [
             {
                 "size": 14, 
@@ -19,6 +20,7 @@
         "name": "A3 Printer", 
         "disabled": false, 
         "isPrinting": false, 
+        "isPrintingComplete": false, 
         "queued": [
             {
                 "size": 26, 

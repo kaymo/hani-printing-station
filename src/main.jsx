@@ -14,7 +14,6 @@ var MainPage = React.createClass({
         return {
             isLoaded: false,
             isPrintingStatusRequested: false,
-            isPrintingComplete: false,
             printers: null,
             printer: null, 
             sizeOptions: null,
@@ -61,9 +60,9 @@ var MainPage = React.createClass({
         }
         var snapshot = this.state.printers;
         snapshot[this.state.printer].isPrinting = !snapshot[this.state.printer].isPrinting;
+        snapshot[this.state.printer].isPrintingComplete = false;
         this.setState({
             printers: snapshot,
-            isPrintingComplete: false,
             intervalProcess: 0,
         });
     },
@@ -90,9 +89,11 @@ var MainPage = React.createClass({
             if (this.state.intervalProcess !== 0) {
                 clearInterval(this.state.intervalProcess);
             }
+            var snapshot = this.state.printers;
+            snapshot[this.state.printer].isPrintingComplete = true;
             this.setState({
                 intervalProcess: 0,
-                isPrintingComplete: true,
+                printers: snapshot,
             });
             return;
         }
@@ -158,12 +159,12 @@ var MainPage = React.createClass({
     },
 
     handleQueuedButtonClick: function() {
-        if (this.state.printers[this.state.printer].isPrinting && this.state.isPrintingComplete) {
+        if (this.state.printers[this.state.printer].isPrinting && this.state.printers[this.state.printer].isPrintingComplete) {
             var snapshot = this.state.printers;
             snapshot[this.state.printer].isPrinting = false;
+            snapshot[this.state.printer].isPrintingComplete = false;
             this.setState({
                 printers: snapshot,
-                isPrintingComplete: false,
             });
             return;
         }
@@ -192,7 +193,7 @@ var MainPage = React.createClass({
         var queuedPictures = this.state.printers;
             
         var sizeIndex = _.findIndex(queuedPictures[currentPrinter].queued, function(queue){return queue.size === printSize});
-        var queuedPicture = _.findWhere(queuedPictures[currentPrinter].queued[sizeIndex].prints, {title: printTitle});
+        var queuedPicture = _.findWhere(queuedPictures[currentPrinter].queued[sizeIndex].prints, {title: printTitle, state: "not started"});
         
         if (queuedPicture === undefined) {
             var data = _.findWhere(pictureData, {title: printTitle});
@@ -220,7 +221,7 @@ var MainPage = React.createClass({
                 <div> 
                     <MenuBar      handlePrinterChange={this.handlePrinterChange} printer={this.state.printer} printers={this.state.printers}/>
                     <ProgressPane isPrinting={queuedPictures.isPrinting} sizeOptions={this.state.sizeOptions} queued={queuedPictures.queued} pictures={pictureData} handlePrintChange={this.handlePrintChange}/>
-                    <QueuedPane   isPrinting={queuedPictures.isPrinting} sizeOptions={this.state.sizeOptions} queued={queuedPictures.queued} isPrintingComplete={this.state.isPrintingComplete} handlePrintChange={this.handlePrintChange} handleQueuedButtonClick={this.handleQueuedButtonClick}/>
+                    <QueuedPane   isPrinting={queuedPictures.isPrinting} sizeOptions={this.state.sizeOptions} queued={queuedPictures.queued} isPrintingComplete={queuedPictures.isPrintingComplete} handlePrintChange={this.handlePrintChange} handleQueuedButtonClick={this.handleQueuedButtonClick}/>
                 </div>
             );
         } else {

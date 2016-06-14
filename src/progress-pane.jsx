@@ -21,14 +21,14 @@ var ProgressPane = React.createClass({
         inProgressChoices = this.props.queued.map(function(size, i) {
             return size.prints.map(function(picture, j) {
                 if (picture.state === "in progress") {
-                    return <ProgressPicture key={picture.title + i} queuedPicture={picture} printSize={size.size}/>;
+                    return <ProgressPicture key={picture.title + i + j} queuedPicture={picture} printSize={size.size}/>;
                 }
             });
         });
         completedChoices = this.props.queued.map(function(size, i) {
             return size.prints.map(function(picture, j) {
                 if (picture.state === "completed") {
-                    return <ProgressPicture key={picture.title + i} queuedPicture={picture} printSize={size.size}/>;
+                    return <ProgressPicture key={picture.title + i + j} queuedPicture={picture} printSize={size.size}/>;
                 }
             });
         });
