@@ -17,7 +17,6 @@ var MainPage = React.createClass({
             printers: null,
             printer: null, 
             sizeOptions: null,
-            intervalProcess: 0,
         };
     },
 
@@ -55,15 +54,15 @@ var MainPage = React.createClass({
     },
     
     updatePrintingStatus: function() {
-        if (this.state.intervalProcess !== 0) {
-            clearInterval(this.state.intervalProcess);
+        if (this.state.printers[this.state.printer].intervalProcess !== 0) {
+            clearInterval(this.state.printers[this.state.printer].intervalProcess);
         }
         var snapshot = this.state.printers;
         snapshot[this.state.printer].isPrinting = !snapshot[this.state.printer].isPrinting;
         snapshot[this.state.printer].isPrintingComplete = false;
+        snapshot[this.state.printer].intervalProcess = 0;
         this.setState({
             printers: snapshot,
-            intervalProcess: 0,
         });
     },
     
@@ -87,13 +86,13 @@ var MainPage = React.createClass({
         });
         
         if (sizeQueueIndex < 0) {
-            if (this.state.intervalProcess !== 0) {
-                clearInterval(this.state.intervalProcess);
+            if (this.state.printers[this.state.printer].intervalProcess !== 0) {
+                clearInterval(this.state.printers[this.state.printer].intervalProcess);
             }
             var snapshot = this.state.printers;
             snapshot[this.state.printer].isPrintingComplete = true;
+            snapshot[this.state.printer].intervalProcess = 0;
             this.setState({
-                intervalProcess: 0,
                 printers: snapshot,
             });
             return;
@@ -154,8 +153,10 @@ var MainPage = React.createClass({
         this.sendPrintRequest();
         
         var processId = setInterval(this.printQueue, 10000);
+        var snapshot = this.state.printers;
+        snapshot[this.state.printer].intervalProcess = processId;
         this.setState({
-            intervalProcess: processId,
+            printers: snapshot,
         });
     },
 
