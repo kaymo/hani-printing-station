@@ -6,7 +6,6 @@ var util = require('util');
 module.exports = function Printing () {
 
     this.printer = null;
-    this.jobId = null;
     
     this.printers = {};
     this.pictures = {};
@@ -44,7 +43,7 @@ module.exports = function Printing () {
     }
     
     this.getCurrentJob = function () {
-        return this.jobId;
+        return this.printers[this.printer].jobId;
     }
     
     this.getPrinter = function () {
@@ -58,7 +57,7 @@ module.exports = function Printing () {
     
     this.printFile = function (req) {
         var error = "";
-        if (this.jobId !== 0) {
+        if (this.printers[this.printer].jobId !== 0) {
             error = "Already printing."
         } else {
             var number = req.query.number; // not yet using
@@ -76,10 +75,10 @@ module.exports = function Printing () {
                     docname: title,
     
                     success: function (job) {
-                        this.jobId = job;
+                        this.printers[this.printer].jobId = job;
                     },
                     error: function (err) {
-                        this.jobId = 0;
+                        this.printers[this.printer].jobId = 0;
                         error = err;
                         console.log(error);
                     }
@@ -93,8 +92,8 @@ module.exports = function Printing () {
     this.cancelJob = function () {
         isCanceled = false;
         
-        if (this.printer !== null & this.jobId !== null)
-            isCanceled = printer.setJob(this.printer, this.jobId, 'CANCEL');
+        if (this.printer !== null & this.printers[this.printer].jobId !== null)
+            isCanceled = printer.setJob(this.printer, this.printers[this.printer].jobId, 'CANCEL');
             
 		return isCanceled;
 	}

@@ -5,6 +5,7 @@
         "isPrinting": false, 
         "isPrintingComplete": false, 
         "intervalProcess": 0,
+        "jobId": null,
         "queued": [
             {
                 "size": 14, 
@@ -23,6 +24,7 @@
         "isPrinting": false, 
         "isPrintingComplete": false, 
         "intervalProcess": 0,
+        "jobId": null,
         "queued": [
             {
                 "size": 26, 
