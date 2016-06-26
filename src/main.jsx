@@ -42,7 +42,7 @@ var MainPage = React.createClass({
     handlePrinterChange: function(newPrinter) {
         var self = this;
         $.post('http://localhost:3000/printer', {printer: newPrinter}).done(function(currentPrinter) {
-            if (currentPrinter !== newPrinter) {
+            if (currentPrinter === newPrinter) {
                 self.setState({
                     printer: newPrinter,
                     sizeOptions: _.pluck(self.state.printers[newPrinter].queued, "size")
@@ -70,6 +70,18 @@ var MainPage = React.createClass({
         var self = this;
         $.post('http://localhost:3000/job').done(function(isCanceled) {
             if (isCanceled) {
+                // Set all 'in progress' to 'not started'
+                var snapshot = self.state.printers;
+                _.each(snapshot[self.state.printer].queued, function(sizeQueue) {
+                    _.each(sizeQueue.prints, function(print) {
+                        if (print.state === "in progress") {
+                            print.state = "not started";
+                        }
+                    });
+                });
+                self.setState({
+                    printers: snapshot,
+                });
                 self.updatePrintingStatus();
             } else {
                 console.log("Couldn't cancel current printing job.");
@@ -112,7 +124,7 @@ var MainPage = React.createClass({
         
         var self = this;
         $.post('http://localhost:3000/print', data).done(function(message) {
-            if (message !== "") {
+            if (message.length === 0) {
                 var snapshot = self.state.printers;
                 snapshot[self.state.printer].queued[sizeQueueIndex].prints[toPrintIndex].state = "in progress";
             

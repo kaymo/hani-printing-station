@@ -51,24 +51,25 @@ module.exports = function Printing () {
     }
     
     this.setPrinter = function (req) {
-        this.printer = req.query.printer;
+        this.printer = req.body.printer;
         return this.printer;
     }
     
     this.printFile = function (req) {
         var error = "";
-        if (this.printers[this.printer].jobId !== 0) {
+        if (this.printers[this.printer].jobId !== null) {
             error = "Already printing."
         } else {
-            var number = req.query.number; // not yet using
-            var size = req.query.size; // not yet using
-            var title = req.query.title;
+            var picNumber = req.body.number; // not yet using
+            var picSize = req.body.size; // not yet using
+            var picTitle = req.body.title;
             
-            var fileName = _.findWhere(this.pictures, {title: title})
+            var fileName = _.findWhere(this.pictures.pictures, {title: picTitle});
             if (fileName === undefined) {
                 error = "File requested for printing not found.";
             } else {
-                return error;
+                this.printers[this.printer].jobId = 1; // TEMP
+                return error; // TEMP
                 printer.printDirect({
                     data: fileName,
                     printer: this.printer,
@@ -78,7 +79,7 @@ module.exports = function Printing () {
                         this.printers[this.printer].jobId = job;
                     },
                     error: function (err) {
-                        this.printers[this.printer].jobId = 0;
+                        this.printers[this.printer].jobId = null;
                         error = err;
                         console.log(error);
                     }
@@ -92,8 +93,17 @@ module.exports = function Printing () {
     this.cancelJob = function () {
         isCanceled = false;
         
-        if (this.printer !== null & this.printers[this.printer].jobId !== null)
-            isCanceled = printer.setJob(this.printer, this.printers[this.printer].jobId, 'CANCEL');
+        console.log(this.printer);
+        console.log(this.printers[this.printer].jobId);
+        
+        
+        if (this.printer !== null & this.printers[this.printer].jobId !== null) {
+            // isCanceled = printer.setJob(this.printer, this.printers[this.printer].jobId, 'CANCEL');
+            isCanceled = true; // TEMP
+            if (isCanceled) {
+                this.printers[this.printer].jobId = null;
+            }
+        }
             
 		return isCanceled;
 	}
