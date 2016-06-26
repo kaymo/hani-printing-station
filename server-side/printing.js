@@ -43,6 +43,8 @@ module.exports = function Printing () {
     }
     
     this.getCurrentJob = function () {
+        // Get current job ID from printer and update
+        this.printers[this.printer].jobId = null;
         return this.printers[this.printer].jobId;
     }
     
