@@ -95,10 +95,6 @@ module.exports = function Printing () {
     this.cancelJob = function () {
         isCanceled = false;
         
-        console.log(this.printer);
-        console.log(this.printers[this.printer].jobId);
-        
-        
         if (this.printer !== null & this.printers[this.printer].jobId !== null) {
             // isCanceled = printer.setJob(this.printer, this.printers[this.printer].jobId, 'CANCEL');
             isCanceled = true; // TEMP
